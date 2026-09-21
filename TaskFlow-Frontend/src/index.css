@@ -1,0 +1,445 @@
+/*
+  Same tokens as ../TaskFlow/design/shared.css — the design mockups and the
+  real app should read as one product. If a token changes, change it in
+  both places (or lift shared.css's values wholesale once the mockups are
+  finalized).
+*/
+
+:root {
+  --bg: #FFFFFF;
+  --tint: #EEF3FF;
+  --tint-strong: #E2EAFD;
+  --ink: #1B1F3B;
+  --ink-dim: #5C6180;
+  --ink-faint: #9195B0;
+  --blue: #2F6FED;
+  --blue-dark: #1E54C4;
+  --green: #22B573;
+  --amber: #E0972B;
+  --red: #E0473F;
+  --line: #E7EAF5;
+  --surface: #FAFBFF;
+
+  --violet: #7C5CE0;
+  --teal: #1FA5A0;
+  --rose: #D9587B;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --shadow-btn: 0 8px 20px -6px rgba(47, 111, 237, 0.5);
+  --shadow-card: 0 20px 50px -20px rgba(27, 31, 59, 0.25);
+  --shadow-soft: 0 1px 2px rgba(27, 31, 59, 0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root { height: 100%; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.55;
+}
+
+.poppins { font-family: 'Poppins', sans-serif; }
+a { text-decoration: none; color: inherit; }
+
+button { font-family: inherit; }
+
+.btn {
+  font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14px;
+  padding: 11px 22px; border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: none; cursor: pointer;
+}
+.btn-primary { background: var(--blue); color: white; box-shadow: var(--shadow-btn); }
+.btn-primary:hover { background: var(--blue-dark); }
+.btn-primary:active { transform: translateY(1px); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+.btn-ghost:hover { border-color: var(--ink-faint); }
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 12.5px; font-weight: 600; color: var(--ink-dim); }
+.field input {
+  height: 44px; border-radius: var(--radius-sm); border: 1px solid var(--line);
+  padding: 0 14px; font-size: 14.5px; font-family: 'Inter', sans-serif; color: var(--ink);
+  outline: none;
+}
+.field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.15); }
+
+.form-error {
+  font-size: 13px; color: var(--red); background: rgba(224, 71, 63, 0.08);
+  border: 1px solid rgba(224, 71, 63, 0.25); border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+
+/* ===== auth pages (Login's split panel) ===== */
+.auth-brand-panel { width: 44%; display: flex; }
+.auth-form-panel { padding: 40px; }
+
+/* ===== avatars ===== */
+.avatar {
+  border-radius: 50%; color: white; font-family: 'Poppins', sans-serif;
+  font-weight: 700; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.avatars-inline { display: flex; align-items: center; }
+.avatars-inline .avatar { width: 30px; height: 30px; font-size: 11.5px; border: 2px solid white; margin-left: -8px; }
+.avatars-inline .avatar:first-child { margin-left: 0; }
+
+/* ===== app shell: sidebar + topbar, shared by Dashboard and Board pages ===== */
+.app-shell { display: flex; height: 100vh; overflow: hidden; }
+
+.sidebar {
+  width: 260px; flex-shrink: 0; background: var(--surface);
+  border-right: 1px solid var(--line); display: flex; flex-direction: column;
+  padding: 20px 16px; transition: transform 0.25s ease;
+}
+/* Off-canvas drawer, but only below the mobile breakpoint — see the
+   .sidebar override there. Inert (transform never changes) above it. */
+.sidebar-scrim { display: none; }
+.sidebar .logo { display: flex; align-items: center; gap: 9px; padding: 6px 8px 22px 8px; }
+.sidebar .logo .mark { width: 26px; height: 26px; border-radius: 8px; background: var(--blue); flex-shrink: 0; }
+.sidebar .logo .word { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 18px; }
+.sidebar .logo .word b { color: var(--blue); font-weight: 700; }
+
+.navitem {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+  border-radius: 10px; font-size: 14px; font-weight: 600; color: var(--ink-dim);
+  border: none; background: none; width: 100%; text-align: left; cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+.navitem.active { background: var(--tint); color: var(--blue-dark); }
+.navitem:disabled { cursor: default; opacity: 0.55; }
+
+.ws-section-title {
+  font-size: 11px; font-weight: 700; color: var(--ink-faint); letter-spacing: 0.04em;
+  text-transform: uppercase; padding: 0 12px 8px 12px; margin-top: 18px;
+}
+
+.user-row { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 12px 10px 4px 10px; border-top: 1px solid var(--line); }
+.user-row .avatar { width: 30px; height: 30px; font-size: 12.5px; }
+.user-row .who { flex: 1; min-width: 0; }
+.user-row .who .name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-row .who .email { font-size: 11.5px; color: var(--ink-faint); }
+
+.topbar {
+  height: 64px; flex-shrink: 0; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 28px; border-bottom: 1px solid var(--line);
+}
+
+.search-field {
+  display: flex; align-items: center; gap: 9px; height: 38px; width: 320px;
+  border: 1px solid var(--line); border-radius: 10px; padding: 0 12px;
+  background: var(--surface); color: var(--ink-faint); font-size: 13.5px;
+}
+
+.icon { width: 18px; height: 18px; flex-shrink: 0; }
+
+/* Shared by Dashboard/Members/Settings' main content area — was three
+   copies of the same inline style; pulled into a class specifically so
+   the mobile media query below has something to override (an inline
+   style can't be overridden by a plain, non-!important stylesheet rule). */
+.page-content { flex: 1; overflow-y: auto; padding: 36px 40px; }
+
+/* Hamburger button that opens .sidebar as an off-canvas drawer below the
+   mobile breakpoint — hidden entirely above it, where the sidebar is
+   already always visible. */
+.mobile-menu-btn {
+  display: none; align-items: center; justify-content: center;
+  width: 34px; height: 34px; flex-shrink: 0; margin-right: 4px;
+  background: none; border: none; color: var(--ink-dim); cursor: pointer;
+}
+
+/* ===== boards grid ===== */
+.board-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.board-card {
+  border: 1px solid var(--line); border-radius: var(--radius-md); background: white;
+  overflow: hidden; box-shadow: var(--shadow-soft); display: block; text-align: left;
+  width: 100%; cursor: pointer; font-family: inherit;
+}
+.board-card .banner { height: 80px; }
+.board-card .body { padding: 14px 16px 16px 16px; }
+.board-card .name { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+.board-card .updated { font-size: 12px; color: var(--ink-faint); }
+
+.new-board-card {
+  border: 1.5px dashed var(--line); border-radius: var(--radius-md); background: none;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; min-height: 168px; color: var(--ink-faint); width: 100%; cursor: pointer;
+  font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 13px;
+}
+.new-board-card:hover { border-color: var(--ink-faint); color: var(--ink-dim); }
+
+@media (max-width: 1100px) { .board-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .board-grid { grid-template-columns: 1fr; } }
+
+/* ===== board view: columns + cards ===== */
+.board-topbar {
+  height: 60px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; border-bottom: 1px solid var(--line); background: white;
+}
+.board-topbar .crumbs { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+.board-topbar .crumbs a { min-width: 0; }
+.board-topbar .ws-name { font-size: 13px; font-weight: 600; color: var(--ink-faint); white-space: nowrap; }
+.board-name-input {
+  font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 18px; color: var(--ink);
+  border: none; background: none; outline: none; padding: 0; width: 220px; cursor: text;
+}
+.board-name-input:focus { outline: 2px solid rgba(47, 111, 237, 0.25); border-radius: 4px; }
+.board-delete { background: none; border: none; color: var(--ink-faint); cursor: pointer; padding: 4px; display: flex; align-items: center; flex-shrink: 0; }
+.board-delete:hover { color: var(--red); }
+.board-actions { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+
+.board-columns { flex: 1; overflow-x: auto; overflow-y: hidden; display: flex; gap: 16px; padding: 20px 24px; align-items: flex-start; }
+
+.list { width: 284px; flex-shrink: 0; background: var(--tint); border-radius: var(--radius-md); display: flex; flex-direction: column; max-height: 100%; }
+.list-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 12px 8px 14px; touch-action: none; }
+.list-head .title { display: flex; align-items: baseline; gap: 7px; min-width: 0; }
+.list-head .name { font-family: 'Poppins', sans-serif; font-size: 13.5px; font-weight: 700; }
+.list-head .count { font-size: 12px; font-weight: 700; color: var(--ink-faint); flex-shrink: 0; }
+.list-name-input {
+  font-family: 'Poppins', sans-serif; font-size: 13.5px; font-weight: 700; color: var(--ink);
+  border: none; background: none; outline: none; padding: 0; width: 100%; min-width: 0; cursor: text;
+  /* Overrides .list-head's touch-action: none (needed for dragging the
+     list) so tapping into this field to edit text still behaves normally. */
+  touch-action: auto;
+}
+.list-name-input:focus { outline: 2px solid rgba(47, 111, 237, 0.25); border-radius: 4px; }
+.list-delete { background: none; border: none; color: var(--ink-faint); cursor: pointer; padding: 2px; opacity: 0; flex-shrink: 0; }
+.list-head:hover .list-delete { opacity: 1; }
+.list-delete:hover { color: var(--red); }
+/* Hover-to-reveal doesn't exist on touch — without this, this button (and
+   .check-remove further down) would be permanently invisible on a
+   phone/tablet. Split from .check-remove's own copy of this rule (search
+   "hover: none") since source order matters here: this has to come after
+   whichever of the two base opacity:0 rules is declared later in the file,
+   or that later rule would win the cascade and silently undo this. */
+@media (hover: none) {
+  .list-delete { opacity: 1; }
+}
+
+.list-cards { display: flex; flex-direction: column; gap: 8px; padding: 0 10px 10px 10px; overflow-y: auto; }
+.card {
+  background: white; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 13px;
+  display: flex; flex-direction: column; gap: 8px; box-shadow: var(--shadow-soft);
+  width: 100%; text-align: left; cursor: pointer; font-family: inherit;
+  /* Without this, a touch-drag on this card fights the browser's own
+     "this looks like a scroll" gesture recognition — dnd-kit's PointerSensor
+     never even gets a clean pointermove sequence to work with. Only ever
+     tested with a mouse before the mobile pass, where this doesn't matter. */
+  touch-action: none;
+}
+.card .title-text { font-size: 13.5px; font-weight: 600; line-height: 1.4; color: var(--ink); }
+.card .desc { font-size: 12px; color: var(--ink-faint); line-height: 1.5; }
+.card .due-pill {
+  display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700;
+  color: var(--ink-faint); align-self: flex-start;
+}
+
+.add-card-row, .add-list-form {
+  display: flex; align-items: center; gap: 6px; padding: 6px 14px 14px 14px; color: var(--ink-faint);
+  font-size: 13px; font-weight: 700; background: none; border: none; cursor: pointer; width: 100%;
+  text-align: left; font-family: 'Inter', sans-serif;
+}
+.add-list {
+  width: 264px; flex-shrink: 0; border-radius: var(--radius-md); border: 1.5px dashed var(--line);
+  display: flex; align-items: center; gap: 7px; padding: 12px 14px; color: var(--ink-faint);
+  font-size: 13.5px; font-weight: 700; height: 44px; background: none; cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+.add-list:hover { border-color: var(--ink-faint); color: var(--ink-dim); }
+
+.inline-input {
+  width: 100%; height: 34px; border-radius: 8px; border: 1px solid var(--line);
+  padding: 0 10px; font-size: 13px; font-family: 'Inter', sans-serif; outline: none;
+}
+.inline-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.15); }
+
+/* ===== card detail modal ===== */
+.scrim { position: fixed; inset: 0; background: rgba(27, 31, 59, 0.42); z-index: 40; }
+.modal {
+  position: fixed; top: 44px; left: 50%; transform: translateX(-50%);
+  width: 740px; max-width: calc(100vw - 48px); max-height: calc(100vh - 88px);
+  background: white; border-radius: var(--radius-lg); box-shadow: 0 30px 70px rgba(27, 31, 59, 0.35);
+  display: flex; overflow: hidden; z-index: 41;
+}
+.modal-body { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow-y: auto; }
+.modal-head { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 0 24px; }
+.modal-head .crumb { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; color: var(--ink-faint); }
+.modal-head .crumb b { color: var(--ink-dim); font-weight: 700; }
+.modal-close { cursor: pointer; background: none; border: none; color: var(--ink-faint); padding: 4px; }
+
+.modal-title-input {
+  width: 100%; font-family: 'Poppins', sans-serif; font-size: 21px; font-weight: 700; line-height: 1.3;
+  border: none; outline: none; padding: 0; background: none; color: var(--ink);
+}
+.modal-title-input:focus { outline: 2px solid rgba(47, 111, 237, 0.25); border-radius: 6px; }
+
+.modal-section { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+.meta-grid { display: flex; gap: 32px; flex-wrap: wrap; }
+.meta-col { display: flex; flex-direction: column; gap: 8px; position: relative; }
+.section-label { font-size: 11.5px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-faint); }
+.chip-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.chip-x { cursor: pointer; }
+.add-pill {
+  width: 24px; height: 24px; border-radius: 50%; border: 1.5px dashed var(--line); background: none;
+  display: flex; align-items: center; justify-content: center; color: var(--ink-faint); cursor: pointer;
+}
+.add-pill.square { border-radius: 6px; height: 22px; }
+.due-input { height: 30px; border-radius: 6px; border: 1px solid var(--line); font-size: 12.5px; padding: 0 8px; font-family: 'Inter', sans-serif; }
+
+.picker { position: absolute; top: 32px; left: 0; z-index: 5; width: 220px; background: white; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 30px rgba(27,31,59,0.18); padding: 8px; display: flex; flex-direction: column; gap: 2px; }
+.picker-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 7px; background: none; border: none; cursor: pointer; text-align: left; font-size: 13px; font-family: 'Inter', sans-serif; color: var(--ink); }
+.picker-item:hover { background: var(--tint); }
+.picker-item.selected { background: var(--tint); }
+
+/* ===== invite modal (narrow variant of the shared .modal/.scrim) ===== */
+.modal-sm { width: 460px; max-width: calc(100vw - 48px); top: 90px; flex-direction: column; padding: 28px; gap: 22px; overflow-y: auto; }
+.modal-sm .modal-head { padding: 0; align-items: flex-start; }
+.modal-sm h2 { font-size: 20px; }
+.modal-sm .sub { font-size: 13px; color: var(--ink-dim); margin-top: 4px; }
+
+.role-row { display: flex; gap: 8px; }
+.role-card {
+  flex: 1; border-radius: 11px; border: 1.5px solid var(--line); padding: 11px 12px;
+  display: flex; flex-direction: column; gap: 3px; cursor: pointer; background: none; text-align: left;
+  font-family: 'Inter', sans-serif;
+}
+.role-card.selected { border-color: var(--blue); background: var(--tint); }
+.role-card .role-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.role-card.selected .role-name { color: var(--blue-dark); }
+.role-card .role-desc { font-size: 11.5px; color: var(--ink-faint); line-height: 1.4; }
+.role-card.selected .role-desc { color: #5C7FC7; }
+
+.divider { display: flex; align-items: center; gap: 12px; }
+.divider .line { flex: 1; height: 1px; background: var(--line); }
+.divider span { font-size: 11.5px; color: var(--ink-faint); font-weight: 700; }
+
+.link-row { display: flex; gap: 8px; }
+.link-field {
+  flex: 1; height: 40px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--surface);
+  display: flex; align-items: center; padding: 0 12px; font-size: 12.5px; color: var(--ink-dim);
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.copy-btn {
+  height: 40px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: white;
+  font-size: 12.5px; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer;
+  display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+}
+.copy-btn:hover { border-color: var(--ink-faint); }
+
+.pending-title { font-size: 11.5px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px; }
+.pending-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.pending-row:last-child { border-bottom: none; }
+.pending-row .email { font-size: 13px; font-weight: 700; }
+.pending-row .info { font-size: 11.5px; color: var(--ink-faint); }
+.revoke-link { font-size: 12px; font-weight: 700; color: var(--ink-faint); cursor: pointer; background: none; border: none; }
+.revoke-link:hover { color: var(--red); }
+
+.desc-row { display: flex; flex-direction: column; gap: 8px; }
+.row-label { display: flex; align-items: center; gap: 8px; }
+.desc-text { font-size: 13.5px; line-height: 1.65; color: var(--ink-dim); padding-left: 22px; white-space: pre-wrap; cursor: text; }
+.desc-textarea {
+  margin-left: 22px; font-size: 13.5px; line-height: 1.65; color: var(--ink); font-family: 'Inter', sans-serif;
+  border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; outline: none; resize: vertical; min-height: 70px;
+}
+.desc-textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.15); }
+
+.checklist-progress { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; margin-left: 22px; }
+.checklist-progress .fill { height: 100%; background: var(--blue); border-radius: 3px; }
+.checklist-items { display: flex; flex-direction: column; gap: 7px; padding-left: 22px; }
+.check-row { display: flex; align-items: center; gap: 10px; }
+.check-row .check-label { flex: 1; font-size: 13px; background: none; border: none; text-align: left; cursor: pointer; padding: 0; font-family: 'Inter', sans-serif; }
+.check-box { width: 17px; height: 17px; border-radius: 5px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; padding: 0; }
+.check-box.done { background: var(--blue); }
+.check-box.pending { border: 1.6px solid var(--line); background: white; }
+.check-label.done { color: var(--ink-faint); text-decoration: line-through; }
+.check-remove { background: none; border: none; color: var(--ink-faint); cursor: pointer; opacity: 0; padding: 2px; }
+.check-row:hover .check-remove { opacity: 1; }
+/* See the matching rule near .list-delete for why touch needs this. */
+@media (hover: none) {
+  .check-remove { opacity: 1; }
+}
+
+.comment-row { display: flex; gap: 10px; padding-left: 22px; }
+.comment-author { font-size: 13px; font-weight: 700; }
+.comment-time { font-size: 11.5px; color: var(--ink-faint); }
+.comment-body { font-size: 13px; line-height: 1.55; color: var(--ink-dim); }
+.comment-remove { font-size: 11.5px; color: var(--ink-faint); background: none; border: none; cursor: pointer; padding: 0; }
+.comment-input {
+  flex: 1; min-height: 38px; border-radius: var(--radius-sm); border: 1px solid var(--line);
+  padding: 8px 12px; font-size: 13px; font-family: 'Inter', sans-serif; outline: none; resize: vertical;
+}
+.comment-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.15); }
+
+.rail { width: 168px; flex-shrink: 0; border-left: 1px solid var(--line); padding: 20px 14px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+.rail-btn {
+  display: flex; align-items: center; gap: 9px; height: 32px; padding: 0 11px; border-radius: 8px;
+  border: 1px solid var(--line); background: white; font-size: 12.5px; font-weight: 700;
+  font-family: 'Inter', sans-serif; color: var(--ink-dim); cursor: pointer; position: relative;
+}
+.rail-btn:hover { border-color: var(--ink-faint); }
+
+/* ===== mobile responsiveness =====
+   One breakpoint (768px) for the app-shell nav (sidebar becomes an
+   off-canvas drawer — there's no room for both it and content side by
+   side below that), and a tighter one (640px) for content-density
+   tweaks on top of that (board topbar, modals going full-screen, the
+   auth split-panel). Both apply cumulatively on a narrow phone. */
+@media (max-width: 768px) {
+  .mobile-menu-btn { display: flex; }
+  .search-field { display: none; }
+  .topbar { padding: 0 16px; }
+  .page-content { padding: 24px 16px; }
+
+  /* .sidebar's own width/padding/colors are unchanged — only how it's
+     positioned changes, from a permanent flex column to a slide-in panel
+     over the content. */
+  .sidebar {
+    position: fixed; top: 0; left: 0; height: 100vh; z-index: 60;
+    max-width: 85vw; transform: translateX(-100%);
+    box-shadow: 20px 0 60px rgba(27, 31, 59, 0.2);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-scrim { display: block; position: fixed; inset: 0; background: rgba(27, 31, 59, 0.4); z-index: 59; }
+}
+
+@media (max-width: 640px) {
+  .auth-brand-panel { display: none; }
+  .auth-form-panel { padding: 24px; }
+
+  .board-topbar { padding: 0 12px; gap: 8px; }
+  .board-topbar .ws-name, .crumb-divider { display: none; }
+  .board-name-input { width: auto; flex: 1; font-size: 16px; }
+  .board-actions { gap: 8px; }
+  .board-actions .btn { padding: 8px 12px; font-size: 12.5px; }
+  .board-columns { padding: 12px; gap: 12px; }
+  .list { width: 80vw; }
+
+  /* Card detail modal goes full-screen — the 740px two-column layout
+     (main content + rail) has nowhere to fit otherwise. */
+  .modal {
+    top: 0; left: 0; transform: none; width: 100vw; max-width: 100vw;
+    height: 100vh; max-height: 100vh; border-radius: 0; flex-direction: column;
+  }
+  .rail {
+    width: 100%; border-left: none; border-top: 1px solid var(--line);
+    flex-direction: row; flex-wrap: wrap; padding: 12px 16px;
+  }
+  .rail-btn { flex: 1 1 auto; justify-content: center; }
+  .meta-grid { gap: 20px; }
+
+  /* Invite modal (.modal.modal-sm) — same full-width treatment as the
+     card modal, but keeps its own top offset/rounded corners since it's
+     short enough not to need full-screen. */
+  .modal-sm { width: calc(100vw - 32px); top: 24px; padding: 20px; }
+}
+
+@media (max-width: 480px) {
+  .board-topbar .avatars-inline { display: none; }
+}

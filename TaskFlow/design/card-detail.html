@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TaskFlow - Refactor Auth into Clean Architecture layers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./shared.css">
+<style>
+  body{ background:var(--surface); }
+  .backdrop{ filter:blur(2px); opacity:0.55; pointer-events:none; user-select:none; }
+  .backdrop .board-topbar{ height:60px; display:flex; align-items:center; padding:0 24px; border-bottom:1px solid var(--line); background:white; gap:12px; }
+  .backdrop .board-name{ font-family:'Poppins', sans-serif; font-weight:700; font-size:18px; }
+  .backdrop .cols{ display:flex; gap:16px; padding:20px 24px; }
+  .backdrop .col{ width:284px; height:640px; background:var(--tint); border-radius:var(--radius-md); flex-shrink:0; }
+
+  .scrim{ position:fixed; inset:0; background:rgba(27,31,59,0.42); }
+
+  .modal{
+    position:fixed; top:44px; left:50%; transform:translateX(-50%);
+    width:740px; max-height:calc(100vh - 88px); background:white; border-radius:var(--radius-lg);
+    box-shadow:0 30px 70px rgba(27,31,59,0.35); display:flex; overflow:hidden;
+  }
+  .modal-body{ flex:1; display:flex; flex-direction:column; min-width:0; overflow-y:auto; }
+  .modal-head{ display:flex; align-items:center; justify-content:space-between; padding:20px 24px 0 24px; }
+  .modal-head .crumb{ display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600; color:var(--ink-faint); }
+  .modal-head .crumb b{ color:var(--ink-dim); font-weight:700; }
+  .modal-title{ padding:10px 24px 0 24px; font-family:'Poppins', sans-serif; font-size:21px; font-weight:700; line-height:1.3; }
+
+  .modal-section{ padding:20px 24px; display:flex; flex-direction:column; gap:16px; }
+  .meta-grid{ display:flex; gap:32px; }
+  .meta-col{ display:flex; flex-direction:column; gap:8px; }
+  .section-label{ font-size:11.5px; font-weight:700; letter-spacing:0.03em; text-transform:uppercase; color:var(--ink-faint); }
+  .avatar-sm{ width:24px; height:24px; font-size:10px; }
+  .chip-row{ display:flex; align-items:center; gap:6px; }
+  .add-pill{ width:24px; height:24px; border-radius:50%; border:1.5px dashed var(--line); display:flex; align-items:center; justify-content:center; color:var(--ink-faint); }
+  .add-pill.square{ border-radius:6px; height:22px; }
+  .due-pill{ display:flex; align-items:center; gap:6px; height:24px; padding:0 9px; border-radius:6px; background:var(--tint); color:var(--blue-dark); font-size:12px; font-weight:700; }
+
+  .desc-row{ display:flex; flex-direction:column; gap:8px; }
+  .row-label{ display:flex; align-items:center; gap:8px; }
+  .desc-text{ font-size:13.5px; line-height:1.65; color:var(--ink-dim); padding-left:22px; }
+
+  .checklist-progress{ height:6px; border-radius:3px; background:var(--line); overflow:hidden; margin-left:22px; }
+  .checklist-progress .fill{ height:100%; background:var(--blue); border-radius:3px; }
+  .checklist-items{ display:flex; flex-direction:column; gap:7px; padding-left:22px; }
+  .check-row{ display:flex; align-items:center; gap:10px; }
+  .check-box{ width:17px; height:17px; border-radius:5px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+  .check-box.done{ background:var(--blue); }
+  .check-box.pending{ border:1.6px solid var(--line); }
+  .check-label{ font-size:13px; }
+  .check-label.done{ color:var(--ink-faint); text-decoration:line-through; }
+
+  .comment-row{ display:flex; gap:10px; padding-left:22px; }
+  .comment-author{ font-size:13px; font-weight:700; }
+  .comment-time{ font-size:11.5px; color:var(--ink-faint); }
+  .comment-body{ font-size:13px; line-height:1.55; color:var(--ink-dim); }
+  .comment-input{ flex:1; height:38px; border-radius:var(--radius-sm); border:1px solid var(--line); display:flex; align-items:center; padding:0 12px; font-size:13px; color:var(--ink-faint); }
+
+  .rail{ width:168px; flex-shrink:0; border-left:1px solid var(--line); padding:20px 14px; display:flex; flex-direction:column; gap:8px; }
+  .rail-btn{
+    display:flex; align-items:center; gap:9px; height:32px; padding:0 11px; border-radius:8px;
+    border:1px solid var(--line); background:white; font-size:12.5px; font-weight:700;
+    font-family:'Inter', sans-serif; color:var(--ink-dim); cursor:pointer;
+  }
+  .close-btn{ cursor:pointer; }
+</style>
+</head>
+<body>
+
+<div class="backdrop">
+  <div class="board-topbar"><span style="width:22px;height:22px;border-radius:7px;background:var(--blue);display:inline-block;"></span><span class="board-name">Sprint 24</span></div>
+  <div class="cols"><div class="col"></div><div class="col"></div><div class="col"></div></div>
+</div>
+
+<div class="scrim"></div>
+
+<div class="modal">
+  <div class="modal-body">
+
+    <div class="modal-head">
+      <div class="crumb">
+        <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="14" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="11" y="3" width="6" height="8" rx="1.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        in list <b>In Progress</b>
+      </div>
+      <svg class="icon close-btn" style="color:var(--ink-faint);" viewBox="0 0 16 16" fill="none"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+    </div>
+
+    <div class="modal-title">Refactor Auth into Clean Architecture layers</div>
+
+    <div class="modal-section">
+
+      <div class="meta-grid">
+        <div class="meta-col">
+          <span class="section-label">Assignees</span>
+          <div class="chip-row">
+            <div class="avatar avatar-sm" style="background:var(--violet);">LF</div>
+            <div class="avatar avatar-sm" style="background:var(--teal);">MK</div>
+            <div class="add-pill">
+              <svg class="icon" style="width:11px;height:11px;" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="meta-col">
+          <span class="section-label">Labels</span>
+          <div class="chip-row">
+            <span class="chip" style="background:var(--blue);">Urgent</span>
+            <span class="chip" style="background:var(--teal);">Feature</span>
+            <div class="add-pill square">
+              <svg class="icon" style="width:11px;height:11px;" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="meta-col">
+          <span class="section-label">Due date</span>
+          <div class="due-pill">
+            <svg class="icon" style="width:12px;height:12px;" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3.5" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 6.5h11M5.5 2v3M10.5 2v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Fri, Sep 5
+          </div>
+        </div>
+      </div>
+
+      <div class="desc-row">
+        <div class="row-label">
+          <svg class="icon" style="width:14px;height:14px;color:var(--ink-faint);" viewBox="0 0 16 16" fill="none"><path d="M2.5 3.5h11M2.5 7h11M2.5 10.5h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span class="section-label">Description</span>
+        </div>
+        <div class="desc-text">Split the Auth feature into Domain, Application, Infrastructure, and Http layers as the template for every later feature. Use Cases depend on repository interfaces, bound to Eloquent implementations in a service provider. That is the dependency inversion worth pointing at in interviews.</div>
+      </div>
+
+      <div class="desc-row">
+        <div class="row-label">
+          <svg class="icon" style="width:14px;height:14px;color:var(--ink-faint);" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="4.5" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M5 7.2l2 2 3.3-3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="section-label">Checklist</span>
+          <span style="font-size:12px; font-weight:700; color:var(--ink-faint);">4/6</span>
+        </div>
+        <div class="checklist-progress"><div class="fill" style="width:66%;"></div></div>
+        <div class="checklist-items">
+          <div class="check-row"><div class="check-box done"><svg class="icon" style="width:10px;height:10px;" viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label done">Domain interfaces and exceptions</span></div>
+          <div class="check-row"><div class="check-box done"><svg class="icon" style="width:10px;height:10px;" viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label done">Use Cases and DTOs</span></div>
+          <div class="check-row"><div class="check-box done"><svg class="icon" style="width:10px;height:10px;" viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label done">Eloquent repository and bindings</span></div>
+          <div class="check-row"><div class="check-box done"><svg class="icon" style="width:10px;height:10px;" viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label done">Thin controller and form requests</span></div>
+          <div class="check-row"><div class="check-box pending"></div><span class="check-label">Feature test covering the guard-swap bug</span></div>
+          <div class="check-row"><div class="check-box pending"></div><span class="check-label">Update TASKFLOW_CONTEXT.md</span></div>
+          <div class="check-row" style="color:var(--ink-faint); font-size:12.5px; font-weight:700; margin-top:2px;">
+            <svg class="icon" style="width:13px;height:13px;" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            Add item
+          </div>
+        </div>
+      </div>
+
+      <div class="desc-row">
+        <div class="row-label">
+          <svg class="icon" style="width:14px;height:14px;color:var(--ink-faint);" viewBox="0 0 16 16" fill="none"><path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <span class="section-label">Comments</span>
+        </div>
+
+        <div class="comment-row">
+          <div class="avatar avatar-sm" style="background:var(--teal); margin-top:2px;">MK</div>
+          <div>
+            <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:3px;"><span class="comment-author">Mia Kessler</span><span class="comment-time">2 hours ago</span></div>
+            <div class="comment-body">Repository interfaces are in, EloquentUserRepository bound in AppServiceProvider. Starting on the form requests next.</div>
+          </div>
+        </div>
+
+        <div class="comment-row">
+          <div class="avatar avatar-sm" style="background:var(--violet); margin-top:2px;">LF</div>
+          <div>
+            <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:3px;"><span class="comment-author">Laila Fadel</span><span class="comment-time">38 minutes ago</span></div>
+            <div class="comment-body">Nice, watch out for the Sanctum guard-swap issue on logout, wrote it up in the checklist.</div>
+          </div>
+        </div>
+
+        <div class="comment-row">
+          <div class="avatar avatar-sm" style="background:var(--violet); margin-top:2px;">LF</div>
+          <div class="comment-input" style="flex:1;">Write a comment...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="rail">
+    <span class="section-label" style="margin-bottom:2px;">Add to card</span>
+    <div class="rail-btn"><svg class="icon" style="width:14px;height:14px;" viewBox="0 0 20 20" fill="none"><circle cx="7" cy="7" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M2 17c0-3 2.2-5 5-5s5 2 5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Members</div>
+    <div class="rail-btn"><svg class="icon" style="width:14px;height:14px;" viewBox="0 0 16 16" fill="none"><path d="M2 8l6-6h5.5V7.5L7.5 14 2 8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="10.3" cy="5.7" r="1" fill="currentColor"/></svg>Labels</div>
+    <div class="rail-btn"><svg class="icon" style="width:14px;height:14px;" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="4.5" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M5 7.2l2 2 3.3-3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Checklist</div>
+    <div class="rail-btn"><svg class="icon" style="width:14px;height:14px;" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3.5" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M2.5 6.5h11M5.5 2v3M10.5 2v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Due date</div>
+    <div class="rail-btn"><svg class="icon" style="width:14px;height:14px;" viewBox="0 0 16 16" fill="none"><path d="M10 4L4.5 9.5a2.2 2.2 0 003 3L13 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Attachment</div>
+    <div style="height:1px; background:var(--line); margin:8px 0;"></div>
+    <div class="rail-btn" style="color:var(--red); border-color:rgba(224,71,63,0.3);"><svg class="icon" style="width:14px;height:14px;" viewBox="0 0 16 16" fill="none"><path d="M3.5 5h9M6.5 5V3.5h3V5M4.5 5l.6 8h5.8l.6-8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Delete card</div>
+  </div>
+</div>
+
+</body>
+</html>

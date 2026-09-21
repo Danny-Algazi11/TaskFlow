@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TaskFlow - Invite to Product Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./shared.css">
+<style>
+  body{ background:var(--surface); }
+  .backdrop{ filter:blur(2px); opacity:0.55; pointer-events:none; user-select:none; display:flex; }
+  .backdrop .sidebar-shell{ width:260px; background:white; border-right:1px solid var(--line); height:100vh; }
+  .backdrop .main{ flex:1; padding:36px 40px; }
+  .backdrop .cards{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-top:40px; }
+  .backdrop .card-ph{ height:168px; border-radius:var(--radius-md); background:white; border:1px solid var(--line); }
+
+  .scrim{ position:fixed; inset:0; background:rgba(27,31,59,0.42); }
+
+  .modal{
+    position:fixed; top:110px; left:50%; transform:translateX(-50%);
+    width:460px; background:white; border-radius:var(--radius-lg);
+    box-shadow:0 30px 70px rgba(27,31,59,0.35); padding:28px; display:flex; flex-direction:column; gap:22px;
+  }
+  .modal-head{ display:flex; align-items:flex-start; justify-content:space-between; }
+  .modal-head h2{ font-family:'Poppins', sans-serif; font-size:22px; font-weight:700; margin-bottom:4px; }
+  .modal-head .sub{ font-size:13px; color:var(--ink-dim); }
+  .close-btn{ cursor:pointer; margin-top:4px; flex-shrink:0; }
+
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field label{ font-size:12.5px; font-weight:700; color:var(--ink-dim); }
+  .field input{ height:42px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--surface); padding:0 13px; font-size:14px; font-family:'Inter', sans-serif; color:var(--ink); outline:none; }
+
+  .role-row{ display:flex; gap:8px; }
+  .role-card{ flex:1; border-radius:11px; border:1.5px solid var(--line); padding:11px 12px; display:flex; flex-direction:column; gap:3px; position:relative; }
+  .role-card.selected{ border-color:var(--blue); background:var(--tint); }
+  .role-card .role-name{ font-size:13px; font-weight:700; }
+  .role-card.selected .role-name{ color:var(--blue-dark); }
+  .role-card .role-desc{ font-size:11.5px; color:var(--ink-faint); line-height:1.4; }
+  .role-card.selected .role-desc{ color:#5C7FC7; }
+  .role-check{ position:absolute; top:10px; right:10px; }
+
+  .divider{ display:flex; align-items:center; gap:12px; }
+  .divider .line{ flex:1; height:1px; background:var(--line); }
+  .divider span{ font-size:11.5px; color:var(--ink-faint); font-weight:700; }
+
+  .link-row{ display:flex; gap:8px; }
+  .link-field{ flex:1; height:40px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--surface); display:flex; align-items:center; padding:0 12px; font-size:12.5px; color:var(--ink-faint); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+  .copy-btn{ height:40px; padding:0 14px; border-radius:var(--radius-sm); border:1px solid var(--line); background:white; font-size:12.5px; font-weight:700; font-family:'Inter', sans-serif; cursor:pointer; display:flex; align-items:center; gap:6px; }
+
+  .pending-title{ font-size:11.5px; font-weight:700; letter-spacing:0.03em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:4px; }
+  .pending-row{ display:flex; align-items:center; justify-content:space-between; padding:9px 2px; }
+  .pending-row .email{ font-size:13px; font-weight:700; }
+  .pending-row .info{ font-size:11.5px; color:var(--ink-faint); }
+  .revoke{ font-size:12px; font-weight:700; color:var(--ink-faint); cursor:pointer; }
+</style>
+</head>
+<body>
+
+<div class="backdrop">
+  <div class="sidebar-shell"></div>
+  <div class="main">
+    <div style="height:68px; border-bottom:1px solid var(--line);"></div>
+    <div class="cards">
+      <div class="card-ph"></div><div class="card-ph"></div><div class="card-ph"></div><div class="card-ph"></div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim"></div>
+
+<div class="modal">
+
+  <div class="modal-head">
+    <div>
+      <h2 class="poppins">Invite to Product Team</h2>
+      <div class="sub">They will get access to every board in this workspace.</div>
+    </div>
+    <svg class="icon close-btn" style="color:var(--ink-faint);" viewBox="0 0 16 16" fill="none"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  </div>
+
+  <div class="field">
+    <label>Email address</label>
+    <input type="text" value="jordan@productteam.co">
+  </div>
+
+  <div class="field">
+    <label>Role</label>
+    <div class="role-row">
+      <div class="role-card">
+        <div class="role-name">Member</div>
+        <div class="role-desc">Can create and edit boards</div>
+      </div>
+      <div class="role-card selected">
+        <svg class="icon role-check" style="width:15px;height:15px;" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="var(--blue)"/><path d="M5 8l2 2 4-4.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="role-name">Admin</div>
+        <div class="role-desc">Can also invite and manage members</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-primary" style="justify-content:center; height:42px;">Send invite</button>
+
+  <div class="divider"><div class="line"></div><span>OR SHARE A LINK</span><div class="line"></div></div>
+
+  <div class="link-row">
+    <div class="link-field">taskflow.app/invite/8gk3n...e91c</div>
+    <button class="copy-btn">
+      <svg class="icon" style="width:13px;height:13px;" viewBox="0 0 16 16" fill="none"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 10.5V4a1.5 1.5 0 011.5-1.5h6.5" stroke="currentColor" stroke-width="1.5"/></svg>
+      Copy
+    </button>
+  </div>
+
+  <div>
+    <div class="pending-title">Pending invitations</div>
+    <div class="pending-row">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="avatar" style="width:26px;height:26px; font-size:10.5px; background:var(--line); color:var(--ink-dim);">?</div>
+        <div>
+          <div class="email">sam@productteam.co</div>
+          <div class="info">Invited 2 days ago - member</div>
+        </div>
+      </div>
+      <span class="revoke">Revoke</span>
+    </div>
+    <div class="pending-row">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="avatar" style="width:26px;height:26px; font-size:10.5px; background:var(--line); color:var(--ink-dim);">?</div>
+        <div>
+          <div class="email">priya@vendor.io</div>
+          <div class="info">Invited 5 days ago - admin</div>
+        </div>
+      </div>
+      <span class="revoke">Revoke</span>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

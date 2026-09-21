@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TaskFlow - Sprint 24</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./shared.css">
+<style>
+  body{ background: var(--surface); }
+  .board-topbar{
+    height:60px; flex-shrink:0; display:flex; align-items:center; justify-content:space-between;
+    padding:0 24px; border-bottom:1px solid var(--line); background:white;
+  }
+  .board-topbar .crumbs{ display:flex; align-items:center; gap:12px; }
+  .board-topbar .ws-name{ font-size:13px; font-weight:600; color:var(--ink-faint); }
+  .board-topbar .board-name{ font-family:'Poppins', sans-serif; font-weight:700; font-size:18px; }
+  .avatars-inline{ display:flex; align-items:center; }
+  .avatars-inline .avatar{ width:28px; height:28px; font-size:11px; border:2px solid white; margin-left:-7px; }
+  .avatars-inline .avatar:first-child{ margin-left:0; }
+
+  .board-columns{ flex:1; overflow-x:auto; overflow-y:hidden; display:flex; gap:16px; padding:20px 24px; align-items:flex-start; }
+  .list{ width:284px; flex-shrink:0; background:var(--tint); border-radius:var(--radius-md); display:flex; flex-direction:column; max-height:100%; }
+  .list-head{ display:flex; align-items:center; justify-content:space-between; padding:12px 12px 8px 14px; }
+  .list-head .title{ display:flex; align-items:baseline; gap:7px; }
+  .list-head .title .name{ font-family:'Poppins', sans-serif; font-size:13.5px; font-weight:700; }
+  .list-head .title .count{ font-size:12px; font-weight:700; color:var(--ink-faint); }
+
+  .list-cards{ display:flex; flex-direction:column; gap:8px; padding:0 10px 10px 10px; overflow-y:auto; }
+  .card{
+    background:white; border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 13px;
+    display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow-soft);
+  }
+  .card .chips{ display:flex; gap:5px; flex-wrap:wrap; }
+  .card .title-text{ font-size:13.5px; font-weight:600; line-height:1.4; }
+  .card .desc{ font-size:12px; color:var(--ink-faint); line-height:1.5; }
+  .card .footer-row{ display:flex; align-items:center; justify-content:space-between; }
+  .metarow{ display:flex; align-items:center; gap:5px; font-size:11.5px; font-weight:700; color:var(--ink-faint); }
+  .metarow.danger{ color:var(--red); }
+  .card .avatar{ width:22px; height:22px; font-size:9.5px; }
+
+  .add-card-row{ display:flex; align-items:center; gap:6px; padding:6px 14px 14px 14px; color:var(--ink-faint); font-size:13px; font-weight:700; }
+  .add-list{
+    width:264px; flex-shrink:0; border-radius:var(--radius-md); border:1.5px dashed var(--line);
+    display:flex; align-items:center; gap:7px; padding:12px 14px; color:var(--ink-faint);
+    font-size:13.5px; font-weight:700; height:44px;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-shell" style="flex-direction:column; height:100vh;">
+
+  <div class="board-topbar">
+    <div class="crumbs">
+      <span class="mark" style="width:22px;height:22px;border-radius:7px;background:var(--blue);display:inline-block;"></span>
+      <div style="width:1px; height:20px; background:var(--line);"></div>
+      <span class="ws-name">Product Team</span>
+      <svg class="icon" style="width:13px;height:13px;color:var(--ink-faint);" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="board-name">Sprint 24</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:14px;">
+      <div class="avatars-inline">
+        <div class="avatar" style="background:var(--teal);">MK</div>
+        <div class="avatar" style="background:var(--green);">RD</div>
+        <div class="avatar" style="background:var(--violet);">LF</div>
+        <div class="avatar" style="background:var(--line); color:var(--ink-dim);">+3</div>
+      </div>
+      <button class="btn btn-ghost btn-sm">Invite</button>
+      <svg class="icon" style="color:var(--ink-dim);" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.6"/><path d="M13 13l-2.5-2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </div>
+  </div>
+
+  <div class="board-columns">
+
+    <!-- To Do -->
+    <div class="list">
+      <div class="list-head">
+        <div class="title"><span class="name">To Do</span><span class="count">5</span></div>
+        <svg class="icon" style="width:15px;height:15px;color:var(--ink-faint);" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="3" r="1.3" fill="currentColor"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="8" cy="13" r="1.3" fill="currentColor"/></svg>
+      </div>
+      <div class="list-cards">
+
+        <div class="card">
+          <div class="chips"><span class="chip" style="background:var(--red);">Bug</span></div>
+          <div class="title-text">Fix Sanctum CSRF mismatch on Safari</div>
+          <div class="footer-row">
+            <div class="metarow">
+              <svg class="icon" style="width:13px;height:13px;" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3.5" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 6.5h11M5.5 2v3M10.5 2v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              Tomorrow
+            </div>
+            <div class="avatar" style="background:var(--teal);">MK</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="title-text">Write onboarding checklist copy</div>
+          <div class="footer-row">
+            <div class="metarow">
+              <svg class="icon" style="width:13px;height:13px;" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="4.5" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 7.2l2 2 3.3-3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              0/4
+            </div>
+            <div class="avatar" style="background:var(--violet);">LF</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="chips"><span class="chip" style="background:var(--amber); color:#3A2A05;">Design</span></div>
+          <div class="title-text">Audit spacing tokens across board view</div>
+        </div>
+
+        <div class="card">
+          <div class="title-text">Set up Soketi on staging</div>
+          <div class="metarow">
+            <svg class="icon" style="width:13px;height:13px;" viewBox="0 0 16 16" fill="none"><path d="M4 9l3 3 5-6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Blocked by infra
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="title-text">Draft Q1 roadmap doc</div>
+        </div>
+
+      </div>
+      <div class="add-card-row">
+        <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Add card
+      </div>
+    </div>
+
+    <!-- In Progress -->
+    <div class="list">
+      <div class="list-head">
+        <div class="title"><span class="name">In Progress</span><span class="count">3</span></div>
+        <svg class="icon" style="width:15px;height:15px;color:var(--ink-faint);" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="3" r="1.3" fill="currentColor"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="8" cy="13" r="1.3" fill="currentColor"/></svg>
+      </div>
+      <div class="list-cards">
+
+        <div class="card" style="border-color:rgba(47,111,237,0.35);">
+          <div class="chips">
+            <span class="chip" style="background:var(--blue);">Urgent</span>
+            <span class="chip" style="background:var(--teal);">Feature</span>
+          </div>
+          <div class="title-text">Refactor Auth into Clean Architecture layers</div>
+          <div class="desc">Domain / Application / Infrastructure split, Use Cases depending on repo interfaces...</div>
+          <div class="footer-row">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="metarow">
+                <svg class="icon" style="width:13px;height:13px;" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="4.5" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 7.2l2 2 3.3-3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                4/6
+              </div>
+              <div class="metarow">
+                <svg class="icon" style="width:13px;height:13px;" viewBox="0 0 16 16" fill="none"><path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+                3
+              </div>
+            </div>
+            <div class="avatar" style="background:var(--violet);">LF</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="chips"><span class="chip" style="background:var(--red);">Bug</span></div>
+          <div class="title-text">Card position resets after cross-list drag</div>
+          <div class="footer-row">
+            <div class="metarow danger">
+              <svg class="icon" style="width:13px;height:13px;" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3.5" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 6.5h11M5.5 2v3M10.5 2v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              Overdue
+            </div>
+            <div class="avatar" style="background:var(--teal);">MK</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="title-text">Wire Echo client into board view</div>
+          <div class="footer-row">
+            <div class="metarow">
+              <svg class="icon" style="width:13px;height:13px;" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="4.5" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 7.2l2 2 3.3-3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              1/3
+            </div>
+            <div class="avatar" style="background:var(--green);">RD</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="add-card-row">
+        <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Add card
+      </div>
+    </div>
+
+    <!-- In Review -->
+    <div class="list">
+      <div class="list-head">
+        <div class="title"><span class="name">In Review</span><span class="count">2</span></div>
+        <svg class="icon" style="width:15px;height:15px;color:var(--ink-faint);" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="3" r="1.3" fill="currentColor"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="8" cy="13" r="1.3" fill="currentColor"/></svg>
+      </div>
+      <div class="list-cards">
+
+        <div class="card">
+          <div class="chips"><span class="chip" style="background:var(--teal);">Feature</span></div>
+          <div class="title-text">Reorder endpoint for board lists</div>
+          <div class="footer-row">
+            <div class="metarow">
+              <svg class="icon" style="width:13px;height:13px;" viewBox="0 0 16 16" fill="none"><path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+              5
+            </div>
+            <div class="avatars-inline">
+              <div class="avatar" style="background:var(--teal);">MK</div>
+              <div class="avatar" style="background:var(--violet);">LF</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="title-text">Invite flow: revoke pending invitation</div>
+          <div class="metarow">
+            <svg class="icon" style="width:13px;height:13px;" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="4.5" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 7.2l2 2 3.3-3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            6/6
+          </div>
+        </div>
+
+      </div>
+      <div class="add-card-row">
+        <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Add card
+      </div>
+    </div>
+
+    <!-- Done -->
+    <div class="list" style="opacity:0.85;">
+      <div class="list-head">
+        <div class="title"><span class="name">Done</span><span class="count">4</span></div>
+        <svg class="icon" style="width:15px;height:15px;color:var(--ink-faint);" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="3" r="1.3" fill="currentColor"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="8" cy="13" r="1.3" fill="currentColor"/></svg>
+      </div>
+      <div class="list-cards">
+        <div class="card"><div class="title-text" style="text-decoration:line-through; color:var(--ink-faint);">Set up Sanctum stateful auth</div></div>
+        <div class="card"><div class="title-text" style="text-decoration:line-through; color:var(--ink-faint);">Migrate workspace_user pivot table</div></div>
+        <div class="card"><div class="title-text" style="text-decoration:line-through; color:var(--ink-faint);">Ship label CRUD + attach to card</div></div>
+        <div class="card"><div class="title-text" style="text-decoration:line-through; color:var(--ink-faint);">Fix nextPosition() off-by-one</div></div>
+      </div>
+    </div>
+
+    <div class="add-list">
+      <svg class="icon" style="width:15px;height:15px;" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      Add another list
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

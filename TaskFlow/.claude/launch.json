@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "design-preview",
+      "runtimeExecutable": "php",
+      "runtimeArgs": ["-S", "127.0.0.1:4517", "-t", "design"],
+      "port": 4517
+    },
+    {
+      "name": "frontend",
+      "url": "http://localhost:5173"
+    }
+  ]
+}

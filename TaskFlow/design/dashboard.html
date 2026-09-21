@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TaskFlow - Product Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./shared.css">
+<style>
+  .workspace-switch{
+    display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:10px;
+    background:white; border:1px solid var(--line); margin-bottom:20px;
+  }
+  .workspace-switch .swatch{ width:26px; height:26px; border-radius:8px; background:var(--blue); flex-shrink:0; }
+  .workspace-switch .name{ flex:1; font-size:13.5px; font-weight:700; }
+
+  .ws-list{ display:flex; flex-direction:column; gap:1px; margin-top:6px; }
+  .ws-list .navitem .dot{ width:18px; height:18px; border-radius:6px; flex-shrink:0; }
+  .ws-section-title{ font-size:11px; font-weight:700; color:var(--ink-faint); letter-spacing:0.04em; text-transform:uppercase; padding:0 12px 8px 12px; margin-top:18px; }
+
+  .user-row{ margin-top:auto; display:flex; align-items:center; gap:10px; padding:12px 10px 4px 10px; border-top:1px solid var(--line); }
+  .user-row .avatar{ width:30px; height:30px; font-size:12.5px; background:var(--violet); }
+  .user-row .who{ flex:1; min-width:0; }
+  .user-row .who .name{ font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .user-row .who .email{ font-size:11.5px; color:var(--ink-faint); }
+
+  .avatars-inline{ display:flex; align-items:center; }
+  .avatars-inline .avatar{ width:30px; height:30px; font-size:11.5px; border:2px solid white; margin-left:-8px; }
+  .avatars-inline .avatar:first-child{ margin-left:0; }
+
+  .content{ flex:1; overflow-y:auto; padding:36px 40px; }
+  .content-head{ display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:28px; }
+  .content-head h1{ font-family:'Poppins', sans-serif; font-weight:700; font-size:1.9rem; margin-bottom:4px; }
+  .content-head .meta{ font-size:13.5px; color:var(--ink-dim); }
+
+  .board-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+  .board-card{ border:1px solid var(--line); border-radius:var(--radius-md); background:white; overflow:hidden; box-shadow:var(--shadow-soft); }
+  .board-card .banner{ height:80px; display:flex; align-items:flex-end; padding:12px; }
+  .board-card .banner .badge{ font-size:11px; font-weight:700; color:white; background:rgba(0,0,0,0.22); padding:3px 8px; border-radius:6px; }
+  .board-card .body{ padding:14px 16px 16px 16px; }
+  .board-card .name{ font-size:15px; font-weight:700; margin-bottom:3px; }
+  .board-card .updated{ font-size:12px; color:var(--ink-faint); margin-bottom:12px; }
+  .board-card .avatar{ width:22px; height:22px; font-size:9.5px; border:2px solid white; margin-left:-6px; }
+  .board-card .avatar:first-child{ margin-left:0; }
+
+  .new-board-card{
+    border:1.5px dashed var(--line); border-radius:var(--radius-md); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:8px; min-height:168px; color:var(--ink-faint);
+  }
+  .new-board-card span{ font-family:'Poppins', sans-serif; font-weight:700; font-size:13px; }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <div class="sidebar">
+    <div class="logo">
+      <span class="mark"></span>
+      <span class="word">Task<b>Flow</b></span>
+    </div>
+
+    <div class="workspace-switch">
+      <div class="swatch"></div>
+      <div class="name">Product Team</div>
+      <svg class="icon" style="width:14px;height:14px;color:var(--ink-faint);" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <div class="navitem active">
+      <svg class="icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="14" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="11" y="3" width="6" height="8" rx="1.5" stroke="currentColor" stroke-width="1.6"/></svg>
+      Boards
+    </div>
+    <div class="navitem">
+      <svg class="icon" viewBox="0 0 20 20" fill="none"><circle cx="7" cy="7" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M2 17c0-3 2.2-5 5-5s5 2 5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="15" cy="8" r="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M12.5 17c.3-2.3 1.8-3.8 3.5-3.8s3.2 1.5 3.5 3.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      Members
+      <span style="margin-left:auto; font-size:11.5px; color:var(--ink-faint); font-weight:700;">6</span>
+    </div>
+    <div class="navitem">
+      <svg class="icon" viewBox="0 0 20 20" fill="none"><path d="M10 2v3M10 15v3M4.2 4.2l2.1 2.1M13.7 13.7l2.1 2.1M2 10h3M15 10h3M4.2 15.8l2.1-2.1M13.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="10" r="3.4" stroke="currentColor" stroke-width="1.6"/></svg>
+      Settings
+    </div>
+
+    <div class="ws-section-title">Workspaces</div>
+    <div class="ws-list">
+      <div class="navitem active"><span class="dot" style="background:var(--blue);"></span>Product Team</div>
+      <div class="navitem"><span class="dot" style="background:var(--teal);"></span>Marketing</div>
+      <div class="navitem"><span class="dot" style="background:var(--green);"></span>Design Studio</div>
+      <div class="navitem" style="color:var(--ink-faint);">
+        <svg class="icon" style="width:16px;height:16px;" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        New workspace
+      </div>
+    </div>
+
+    <div class="user-row">
+      <div class="avatar">LF</div>
+      <div class="who">
+        <div class="name">Laila Fadel</div>
+        <div class="email">laila@productteam.co</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
+
+    <div class="topbar">
+      <div class="search-field">
+        <svg class="icon" style="width:15px;height:15px;" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.6"/><path d="M13 13l-2.5-2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Search boards, cards...
+      </div>
+      <div style="display:flex; align-items:center; gap:18px;">
+        <svg class="icon" style="width:19px;height:19px; color:var(--ink-dim);" viewBox="0 0 20 20" fill="none"><path d="M6 8a4 4 0 018 0c0 3.2 1.2 4.4 1.8 5H4.2c.6-.6 1.8-1.8 1.8-5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.3 15.5a1.8 1.8 0 003.4 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <div class="avatars-inline">
+          <div class="avatar" style="background:var(--teal);">MK</div>
+          <div class="avatar" style="background:var(--green);">RD</div>
+          <div class="avatar" style="background:var(--violet);">LF</div>
+        </div>
+        <button class="btn btn-ghost btn-sm">Invite</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="content-head">
+        <div>
+          <h1 class="poppins">Product Team</h1>
+          <div class="meta">6 members - 4 boards</div>
+        </div>
+        <button class="btn btn-primary">
+          <svg class="icon" style="width:15px;height:15px;" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          New board
+        </button>
+      </div>
+
+      <div class="board-grid">
+
+        <a href="board.html" class="board-card">
+          <div class="banner" style="background:linear-gradient(135deg, #4C86F5, #2F6FED);">
+            <span class="badge">12 lists</span>
+          </div>
+          <div class="body">
+            <div class="name">Sprint 24</div>
+            <div class="updated">Updated 2 hours ago</div>
+            <div>
+              <span class="avatar" style="background:var(--teal);">MK</span>
+              <span class="avatar" style="background:var(--violet);">LF</span>
+              <span class="avatar" style="background:var(--line); color:var(--ink-dim);">+3</span>
+            </div>
+          </div>
+        </a>
+
+        <div class="board-card">
+          <div class="banner" style="background:linear-gradient(135deg, #35C08C, #1F9B6E);">
+            <span class="badge">7 lists</span>
+          </div>
+          <div class="body">
+            <div class="name">Q1 Roadmap</div>
+            <div class="updated">Updated yesterday</div>
+            <div>
+              <span class="avatar" style="background:var(--violet);">LF</span>
+              <span class="avatar" style="background:var(--green);">RD</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="board-card">
+          <div class="banner" style="background:linear-gradient(135deg, #E97C5A, #D9587B);">
+            <span class="badge">5 lists</span>
+          </div>
+          <div class="body">
+            <div class="name">Bug Triage</div>
+            <div class="updated">Updated 3 days ago</div>
+            <div>
+              <span class="avatar" style="background:var(--teal);">MK</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="new-board-card">
+          <svg class="icon" style="width:22px;height:22px;" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span>Create a board</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

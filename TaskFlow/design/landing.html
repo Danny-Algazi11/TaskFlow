@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TaskFlow - A simple board for you and your team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./shared.css">
+<style>
+  /* ===== nav ===== */
+  nav{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 0;
+  }
+  .logo{ font-family:'Poppins', sans-serif; font-weight:700; font-size:20px; }
+  .logo span{ color:var(--blue); }
+  nav .links{ display:flex; align-items:center; gap:28px; }
+  nav .links a.navlink{ font-size:14px; font-weight:500; color:var(--ink-dim); }
+  @media (max-width: 720px){
+    nav .links a.navlink:not(.btn){ display:none; }
+  }
+
+  /* ===== hero ===== */
+  .hero{ text-align:center; padding:48px 0 20px; }
+  .hero h1{
+    font-family:'Poppins', sans-serif; font-weight:800;
+    font-size:clamp(2.2rem, 5vw, 3.4rem);
+    line-height:1.15; letter-spacing:-0.02em;
+    max-width:15ch; margin:0 auto 18px;
+  }
+  .hero h1 .accent{ color:var(--blue); }
+  .hero p{ color:var(--ink-dim); font-size:17px; max-width:44ch; margin:0 auto 28px; }
+  .hero .ctas{ display:flex; justify-content:center; gap:14px; align-items:center; margin-bottom:12px; }
+  .hero .fine{ font-size:12.5px; color:var(--ink-dim); }
+
+  /* ===== hero mockup ===== */
+  .mockup-wrap{ padding:40px 0 56px; }
+  .mockup{ background:var(--tint); border-radius:var(--radius-xl); padding:28px; max-width:900px; margin:0 auto; }
+  .mockup-inner{ background:white; border-radius:18px; box-shadow:var(--shadow-card); padding:22px; }
+  .mockup-title{ display:flex; align-items:center; gap:9px; margin-bottom:18px; }
+  .mockup-title .dot{ width:22px; height:22px; border-radius:7px; background:var(--blue); }
+  .mockup-title span{ font-family:'Poppins', sans-serif; font-weight:700; font-size:13.5px; }
+  .mockup-cols{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .mockup-col-title{ font-family:'Poppins', sans-serif; font-weight:600; font-size:11.5px; color:var(--ink-dim); margin-bottom:10px; letter-spacing:0.02em; }
+  .mcard{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:10px; font-size:12.5px; }
+  .mcard .check{ display:inline-flex; align-items:center; gap:6px; color:var(--green); font-weight:600; font-size:11px; }
+  .mcard .dot{ width:6px; height:6px; border-radius:50%; background:var(--green); }
+
+  /* ===== trust row ===== */
+  .trust{ text-align:center; padding:16px 0 54px; }
+  .trust p{ font-size:12px; color:var(--ink-dim); margin-bottom:22px; }
+  .trust .logos{ display:flex; justify-content:center; align-items:center; gap:38px; flex-wrap:wrap; }
+  .trust .logos .mark{ display:flex; align-items:center; gap:8px; color:#B7BBD1; }
+  .trust .logos .mark .glyph{ width:20px; height:20px; border-radius:6px; background:#EEF0F7; display:flex; align-items:center; justify-content:center; font-family:'Poppins',sans-serif; font-weight:800; font-size:11px; color:#9599B3; }
+  .trust .logos .mark span.name{ font-family:'Poppins', sans-serif; font-weight:600; font-size:14.5px; }
+
+  /* ===== features ===== */
+  .features{ padding:40px 0 70px; }
+  .features h2{ font-family:'Poppins', sans-serif; font-weight:700; font-size:2rem; text-align:center; margin-bottom:40px; }
+  .feature-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+  .feature{ background:var(--tint); border-radius:var(--radius-lg); padding:24px; }
+  .feature.wide{ grid-column: span 2; display:flex; align-items:center; gap:24px; }
+  .feature.wide .copy{ flex:1; }
+  .feature h3{ font-family:'Poppins', sans-serif; font-weight:600; font-size:15.5px; margin-bottom:6px; }
+  .feature p{ font-size:13.5px; color:var(--ink-dim); }
+  @media (max-width: 860px){
+    .feature-grid{ grid-template-columns:repeat(2,1fr); }
+    .feature.wide{ grid-column: span 2; flex-direction:column; align-items:flex-start; }
+  }
+
+  /* ===== testimonial ===== */
+  .testimonial{ padding:40px 0 70px; }
+  .t-card{ background:var(--ink); color:white; border-radius:var(--radius-xl); padding:40px; max-width:660px; margin:0 auto; text-align:center; }
+  .t-card .stars{ color:#FFC94D; font-size:14px; margin-bottom:16px; letter-spacing:2px; }
+  .t-card p{ font-family:'Poppins', sans-serif; font-weight:500; font-size:18px; line-height:1.5; margin-bottom:20px; }
+  .t-card .who{ font-size:13px; color:#B7BBD1; }
+
+  /* ===== footer cta ===== */
+  .footer-cta{ text-align:center; padding:56px 0; background:var(--tint); border-radius:var(--radius-xl); margin:0 32px 40px; }
+  .footer-cta h2{ font-family:'Poppins', sans-serif; font-weight:700; font-size:1.75rem; margin-bottom:18px; }
+
+  footer.page-footer{ text-align:center; padding:24px 0 40px; font-size:12px; color:var(--ink-dim); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="logo">Task<span>Flow</span></div>
+    <div class="links">
+      <a href="#" class="navlink">Product</a>
+      <a href="#" class="navlink">Teams</a>
+      <a href="#" class="navlink">Pricing</a>
+      <a href="#" class="navlink btn btn-primary">Start for free</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <h1 class="poppins">A simple board <span class="accent">for you and your team</span></h1>
+    <p>Track tasks, move cards, and stay in sync - one board your whole team actually opens every day.</p>
+    <div class="ctas">
+      <a href="#" class="btn btn-primary">Start for free</a>
+      <a href="#" class="btn-ghost btn">See how it works</a>
+    </div>
+    <div class="fine">Free forever. No credit card.</div>
+  </div>
+
+  <div class="mockup-wrap">
+    <div class="mockup">
+      <div class="mockup-inner">
+        <div class="mockup-title">
+          <div class="dot"></div>
+          <span>Sprint 24</span>
+        </div>
+        <div class="mockup-cols">
+          <div>
+            <div class="mockup-col-title">TO DO</div>
+            <div class="mcard">Fix login bug</div>
+            <div class="mcard">Design invite modal</div>
+          </div>
+          <div>
+            <div class="mockup-col-title">IN PROGRESS</div>
+            <div class="mcard">Drag &amp; drop reorder</div>
+            <div class="mcard">Wire up login screen</div>
+          </div>
+          <div>
+            <div class="mockup-col-title">DONE</div>
+            <div class="mcard"><span class="check"><span class="dot"></span>Schema migrated</span></div>
+            <div class="mcard"><span class="check"><span class="dot"></span>Auth working</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="trust">
+    <p>Trusted by teams who actually finish their sprints</p>
+    <div class="logos">
+      <div class="mark"><span class="glyph">N</span><span class="name">Northwind</span></div>
+      <div class="mark"><span class="glyph">A</span><span class="name">Acme Co.</span></div>
+      <div class="mark"><span class="glyph">V</span><span class="name">Vertex</span></div>
+      <div class="mark"><span class="glyph">L</span><span class="name">Loopline</span></div>
+      <div class="mark"><span class="glyph">F</span><span class="name">Formwork</span></div>
+    </div>
+  </div>
+
+  <div class="features">
+    <h2 class="poppins">Everything your board needs</h2>
+    <div class="feature-grid">
+
+      <div class="feature wide">
+        <div class="icon-badge">
+          <svg class="icon" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="2.5" width="6" height="15" rx="1.6" stroke="white" stroke-width="1.6"/><rect x="11.5" y="2.5" width="6" height="9" rx="1.6" stroke="white" stroke-width="1.6"/></svg>
+        </div>
+        <div class="copy">
+          <h3 class="poppins">Kanban view</h3>
+          <p>Drag cards across lists and watch your whole team's progress at a glance.</p>
+        </div>
+      </div>
+
+      <div class="feature wide">
+        <div class="icon-badge">
+          <svg class="icon" viewBox="0 0 20 20" fill="none"><circle cx="7" cy="7" r="3" stroke="white" stroke-width="1.6"/><path d="M2 17c0-3 2.2-5 5-5s5 2 5 5" stroke="white" stroke-width="1.6" stroke-linecap="round"/><circle cx="15" cy="8" r="2.4" stroke="white" stroke-width="1.6"/><path d="M12.5 17c.3-2.3 1.8-3.8 3.5-3.8s3.2 1.5 3.5 3.8" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <div class="copy">
+          <h3 class="poppins">Assign &amp; comment</h3>
+          <p>Tag teammates, leave context in comments, keep decisions in one place.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="icon-badge">
+          <svg class="icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="12" rx="2" stroke="white" stroke-width="1.6"/><path d="M6.5 8.5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="poppins">Checklists</h3>
+        <p>Break big cards into small steps, and watch the checkmarks add up.</p>
+      </div>
+
+      <div class="feature">
+        <div class="icon-badge">
+          <svg class="icon" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="white" stroke-width="1.6"/><path d="M10 6v4l3 2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="poppins">Due dates</h3>
+        <p>Never lose track of what's overdue - see it flagged right on the card.</p>
+      </div>
+
+      <div class="feature">
+        <div class="icon-badge">
+          <svg class="icon" viewBox="0 0 20 20" fill="none"><path d="M11.5 2.5L4 11.5h4.5L8.5 17.5 16 8.5h-4.5l0-6z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="poppins">Real-time sync</h3>
+        <p>See changes the moment they happen - no refresh, no waiting.</p>
+      </div>
+
+      <div class="feature">
+        <div class="icon-badge">
+          <svg class="icon" viewBox="0 0 20 20" fill="none"><path d="M4 6.5l6 4.5 6-4.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="4.5" width="14" height="11" rx="2" stroke="white" stroke-width="1.6"/></svg>
+        </div>
+        <h3 class="poppins">Invite your team</h3>
+        <p>Add teammates by email in seconds, set roles, start collaborating.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="testimonial">
+    <div class="t-card">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="poppins">"We moved off spreadsheets in a week. Everyone actually opens the board now instead of asking what's next in standup."</p>
+      <div class="who">Early user, Solo-Build Workspace</div>
+    </div>
+  </div>
+
+  <div class="footer-cta">
+    <h2 class="poppins">Organize anything, with anyone.</h2>
+    <a href="#" class="btn btn-primary">Start for free</a>
+  </div>
+
+  <footer class="page-footer">TaskFlow - a solo-built board manager, 2026</footer>
+</div>
+
+</body>
+</html>
