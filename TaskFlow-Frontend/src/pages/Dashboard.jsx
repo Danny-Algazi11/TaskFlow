@@ -39,6 +39,7 @@ export default function Dashboard() {
   const [newBoardName, setNewBoardName] = useState("");
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     workspacesApi.listWorkspaces().then((list) => {
@@ -89,6 +90,10 @@ export default function Dashboard() {
     return <FirstWorkspacePrompt onCreate={handleCreateWorkspace} />;
   }
 
+  const filteredBoards = boards.filter((b) =>
+    b.name.toLowerCase().includes(searchQuery.trim().toLowerCase()),
+  );
+
   return (
     <div className="app-shell">
       <Sidebar
@@ -116,6 +121,8 @@ export default function Dashboard() {
           )}
           onInviteClick={() => setShowInviteModal(true)}
           onMenuClick={() => setIsSidebarOpen(true)}
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
         />
 
         <div className="page-content">
@@ -156,7 +163,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="board-grid">
-              {boards.map((board, i) => (
+              {filteredBoards.map((board, i) => (
                 <button
                   key={board.id}
                   type="button"

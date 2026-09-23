@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   DndContext,
   DragOverlay,
@@ -7,22 +7,44 @@ import {
   closestCorners,
   useSensor,
   useSensors,
-} from '@dnd-kit/core';
-import { SortableContext, arrayMove, horizontalListSortingStrategy } from '@dnd-kit/sortable';
-import ListColumn from '../components/ListColumn';
-import CardDetailModal from '../components/CardDetailModal';
-import InviteModal from '../components/InviteModal';
-import { useAuth } from '../context/AuthContext';
-import echo from '../echo';
-import { applyCardCreated, applyCardUpdated, applyCardDeleted, applyCardsReordered } from './boardCardState';
-import * as boardsApi from '../api/boards';
-import * as workspacesApi from '../api/workspaces';
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  horizontalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import ListColumn from "../components/ListColumn";
+import CardDetailModal from "../components/CardDetailModal";
+import InviteModal from "../components/InviteModal";
+import { useAuth } from "../context/AuthContext";
+import echo from "../echo";
+import {
+  applyCardCreated,
+  applyCardUpdated,
+  applyCardDeleted,
+  applyCardsReordered,
+} from "./boardCardState";
+import * as boardsApi from "../api/boards";
+import * as workspacesApi from "../api/workspaces";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 function initials(name) {
-  return name.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase();
+  return name
+    .split(" ")
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 }
 
-const MEMBER_COLORS = ['var(--teal)', 'var(--green)', 'var(--violet)', 'var(--rose)', 'var(--blue)'];
+const MEMBER_COLORS = [
+  "var(--teal)",
+  "var(--green)",
+  "var(--violet)",
+  "var(--rose)",
+  "var(--blue)",
+];
 
 /**
  * Sortable ids share one flat namespace across the whole DndContext (lists
@@ -30,10 +52,13 @@ const MEMBER_COLORS = ['var(--teal)', 'var(--green)', 'var(--violet)', 'var(--ro
  * every id is prefixed by type and parsed back here.
  */
 function parseSortableId(id) {
-  if (typeof id !== 'string') return null;
-  if (id.startsWith('list-drop-')) return { type: 'list', id: Number(id.slice('list-drop-'.length)) };
-  if (id.startsWith('list-')) return { type: 'list', id: Number(id.slice('list-'.length)) };
-  if (id.startsWith('card-')) return { type: 'card', id: Number(id.slice('card-'.length)) };
+  if (typeof id !== "string") return null;
+  if (id.startsWith("list-drop-"))
+    return { type: "list", id: Number(id.slice("list-drop-".length)) };
+  if (id.startsWith("list-"))
+    return { type: "list", id: Number(id.slice("list-".length)) };
+  if (id.startsWith("card-"))
+    return { type: "card", id: Number(id.slice("card-".length)) };
   return null;
 }
 
@@ -42,7 +67,7 @@ export default function Board() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [board, setBoard] = useState(null);
-  const [boardName, setBoardName] = useState('');
+  const [boardName, setBoardName] = useState("");
   const [workspace, setWorkspace] = useState(null);
   const [members, setMembers] = useState([]);
   const [lists, setLists] = useState(null);
@@ -50,12 +75,14 @@ export default function Board() {
   // drag needs to move one card between two lists' arrays atomically.
   const [cardsByList, setCardsByList] = useState({});
   const [isAddingList, setIsAddingList] = useState(false);
-  const [newListName, setNewListName] = useState('');
+  const [newListName, setNewListName] = useState("");
   const [openCard, setOpenCard] = useState(null); // { card, listName }
   const [activeItem, setActiveItem] = useState(null); // { type, data } — for DragOverlay
   const [showInviteModal, setShowInviteModal] = useState(false);
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+  );
 
   useEffect(() => {
     let isCurrent = true;
@@ -76,7 +103,9 @@ export default function Board() {
       setWorkspace(workspaceData);
       setMembers(memberData);
 
-      const cardLists = await Promise.all(listData.map((list) => boardsApi.listCards(list.id)));
+      const cardLists = await Promise.all(
+        listData.map((list) => boardsApi.listCards(list.id)),
+      );
       if (!isCurrent) return;
       const byList = {};
       listData.forEach((list, i) => {
@@ -101,10 +130,12 @@ export default function Board() {
   async function handleAddList(e) {
     e.preventDefault();
     if (!newListName.trim()) return;
-    const list = await boardsApi.createList(boardId, { name: newListName.trim() });
+    const list = await boardsApi.createList(boardId, {
+      name: newListName.trim(),
+    });
     setLists((prev) => [...prev, list]);
     setCardsByList((prev) => ({ ...prev, [list.id]: [] }));
-    setNewListName('');
+    setNewListName("");
     setIsAddingList(false);
   }
 
@@ -113,13 +144,19 @@ export default function Board() {
       setBoardName(board.name);
       return;
     }
-    const updated = await boardsApi.updateBoard(boardId, { name: boardName.trim() });
+    const updated = await boardsApi.updateBoard(boardId, {
+      name: boardName.trim(),
+    });
     setBoard(updated);
     setBoardName(updated.name);
   }
 
   async function handleDeleteBoard() {
-    if (!window.confirm(`Delete "${board.name}"? All its lists and cards will be permanently removed. This cannot be undone.`)) {
+    if (
+      !window.confirm(
+        `Delete "${board.name}"? All its lists and cards will be permanently removed. This cannot be undone.`,
+      )
+    ) {
       return;
     }
     await boardsApi.deleteBoard(boardId);
@@ -127,7 +164,9 @@ export default function Board() {
   }
 
   function handleListUpdated(updatedList) {
-    setLists((prev) => prev.map((l) => (l.id === updatedList.id ? updatedList : l)));
+    setLists((prev) =>
+      prev.map((l) => (l.id === updatedList.id ? updatedList : l)),
+    );
   }
 
   function handleListDeleted(listId) {
@@ -171,10 +210,12 @@ export default function Board() {
   useEffect(() => {
     const channel = echo.private(`board.${boardId}`);
 
-    channel.listen('.card.created', (payload) => handleCardCreated(payload.board_list_id, payload));
-    channel.listen('.card.updated', handleCardUpdated);
-    channel.listen('.card.deleted', (payload) => handleCardDeleted(payload.id));
-    channel.listen('.cards.reordered', handleCardsReordered);
+    channel.listen(".card.created", (payload) =>
+      handleCardCreated(payload.board_list_id, payload),
+    );
+    channel.listen(".card.updated", handleCardUpdated);
+    channel.listen(".card.deleted", (payload) => handleCardDeleted(payload.id));
+    channel.listen(".cards.reordered", handleCardsReordered);
 
     return () => {
       echo.leave(`board.${boardId}`);
@@ -184,11 +225,17 @@ export default function Board() {
   function handleDragStart(event) {
     const parsed = parseSortableId(event.active.id);
     if (!parsed) return;
-    if (parsed.type === 'card') {
+    if (parsed.type === "card") {
       const listId = findListIdForCard(parsed.id);
-      setActiveItem({ type: 'card', data: cardsByList[listId]?.find((c) => c.id === parsed.id) });
+      setActiveItem({
+        type: "card",
+        data: cardsByList[listId]?.find((c) => c.id === parsed.id),
+      });
     } else {
-      setActiveItem({ type: 'list', data: lists.find((l) => l.id === parsed.id) });
+      setActiveItem({
+        type: "list",
+        data: lists.find((l) => l.id === parsed.id),
+      });
     }
   }
 
@@ -199,28 +246,38 @@ export default function Board() {
     const { active, over } = event;
     if (!over) return;
     const activeParsed = parseSortableId(active.id);
-    if (!activeParsed || activeParsed.type !== 'card') return;
+    if (!activeParsed || activeParsed.type !== "card") return;
 
     const activeListId = findListIdForCard(activeParsed.id);
     const overListId = over.data.current?.listId;
-    if (activeListId === null || !overListId || activeListId === overListId) return;
+    if (activeListId === null || !overListId || activeListId === overListId)
+      return;
 
     setCardsByList((prev) => {
       const sourceItems = prev[activeListId] ?? [];
       const destItems = prev[overListId] ?? [];
-      const activeIndex = sourceItems.findIndex((c) => c.id === activeParsed.id);
+      const activeIndex = sourceItems.findIndex(
+        (c) => c.id === activeParsed.id,
+      );
       if (activeIndex === -1) return prev;
 
-      const movedCard = { ...sourceItems[activeIndex], board_list_id: overListId };
+      const movedCard = {
+        ...sourceItems[activeIndex],
+        board_list_id: overListId,
+      };
       const newSource = sourceItems.filter((c) => c.id !== activeParsed.id);
 
       let insertIndex = destItems.length;
       const overParsed = parseSortableId(over.id);
-      if (overParsed?.type === 'card') {
+      if (overParsed?.type === "card") {
         const idx = destItems.findIndex((c) => c.id === overParsed.id);
         if (idx !== -1) insertIndex = idx;
       }
-      const newDest = [...destItems.slice(0, insertIndex), movedCard, ...destItems.slice(insertIndex)];
+      const newDest = [
+        ...destItems.slice(0, insertIndex),
+        movedCard,
+        ...destItems.slice(insertIndex),
+      ];
 
       return { ...prev, [activeListId]: newSource, [overListId]: newDest };
     });
@@ -240,9 +297,14 @@ export default function Board() {
     const activeParsed = parseSortableId(active.id);
     if (!activeParsed) return;
 
-    if (activeParsed.type === 'list') {
+    if (activeParsed.type === "list") {
       const overParsed = parseSortableId(over.id);
-      if (!overParsed || overParsed.type !== 'list' || activeParsed.id === overParsed.id) return;
+      if (
+        !overParsed ||
+        overParsed.type !== "list" ||
+        activeParsed.id === overParsed.id
+      )
+        return;
 
       const oldIndex = lists.findIndex((l) => l.id === activeParsed.id);
       const newIndex = lists.findIndex((l) => l.id === overParsed.id);
@@ -250,7 +312,12 @@ export default function Board() {
 
       const newLists = arrayMove(lists, oldIndex, newIndex);
       setLists(newLists);
-      boardsApi.reorderLists(boardId, newLists.map((l) => l.id)).catch(() => {});
+      boardsApi
+        .reorderLists(
+          boardId,
+          newLists.map((l) => l.id),
+        )
+        .catch(() => {});
       return;
     }
 
@@ -267,31 +334,107 @@ export default function Board() {
 
     let overIndex = items.length - 1;
     const overParsed = parseSortableId(over.id);
-    if (overParsed?.type === 'card') {
+    if (overParsed?.type === "card") {
       const idx = items.findIndex((c) => c.id === overParsed.id);
       if (idx !== -1) overIndex = idx;
     }
 
     const reordered = arrayMove(items, activeIndex, overIndex);
     setCardsByList((prev) => ({ ...prev, [targetListId]: reordered }));
-    boardsApi.reorderCards(targetListId, reordered.map((c) => c.id)).catch(() => {});
+    boardsApi
+      .reorderCards(
+        targetListId,
+        reordered.map((c) => c.id),
+      )
+      .catch(() => {});
   }
 
   if (!board || lists === null) {
-    return null;
+    return (
+      <div
+        className="app-shell"
+        style={{ flexDirection: "column", height: "100vh" }}
+      >
+        <div className="board-topbar">
+          <div className="crumbs">
+            <Skeleton width={22} height={22} borderRadius={7} />
+            <div
+              className="crumb-divider"
+              style={{ width: 1, height: 20, background: "var(--line)" }}
+            />
+            <Skeleton width={140} height={18} />
+          </div>
+          <div className="board-actions">
+            <div className="avatars-inline">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} circle width={28} height={28} />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="board-columns">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="list">
+              <div className="list-head">
+                <Skeleton width="55%" height={14} />
+                <Skeleton width={18} height={12} />
+              </div>
+              <div className="list-cards">
+                {Array.from({ length: 3 }).map((__, j) => (
+                  <div key={j} className="card" style={{ cursor: "default" }}>
+                    <Skeleton width="70%" height={13.5} />
+                    <Skeleton width="45%" height={12} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="app-shell" style={{ flexDirection: 'column', height: '100vh' }}>
+    <div
+      className="app-shell"
+      style={{ flexDirection: "column", height: "100vh" }}
+    >
       <div className="board-topbar">
         <div className="crumbs">
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ width: 22, height: 22, borderRadius: 7, background: 'var(--blue)', display: 'inline-block', flexShrink: 0 }} />
-            <div className="crumb-divider" style={{ width: 1, height: 20, background: 'var(--line)' }} />
+          <Link
+            to="/"
+            style={{ display: "flex", alignItems: "center", gap: 12 }}
+          >
+            <span
+              style={{
+                width: 22,
+                height: 22,
+                borderRadius: 7,
+                background: "var(--blue)",
+                display: "inline-block",
+                flexShrink: 0,
+              }}
+            />
+            <div
+              className="crumb-divider"
+              style={{ width: 1, height: 20, background: "var(--line)" }}
+            />
             <span className="ws-name">{workspace?.name}</span>
           </Link>
-          <svg className="icon" style={{ width: 13, height: 13, color: 'var(--ink-faint)' }} viewBox="0 0 16 16" fill="none">
-            <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          <svg
+            className="icon"
+            style={{ width: 13, height: 13, color: "var(--ink-faint)" }}
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <path
+              d="M6 3l5 5-5 5"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
           <input
             className="board-name-input"
@@ -299,25 +442,57 @@ export default function Board() {
             onChange={(e) => setBoardName(e.target.value)}
             onBlur={handleRenameBoard}
           />
-          <button type="button" className="board-delete" onClick={handleDeleteBoard} title="Delete board">
-            <svg className="icon" style={{ width: 14, height: 14 }} viewBox="0 0 16 16" fill="none">
-              <path d="M3.5 5h9M6.5 5V3.5h3V5M4.5 5l.6 8h5.8l.6-8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          <button
+            type="button"
+            className="board-delete"
+            onClick={handleDeleteBoard}
+            title="Delete board"
+          >
+            <svg
+              className="icon"
+              style={{ width: 14, height: 14 }}
+              viewBox="0 0 16 16"
+              fill="none"
+            >
+              <path
+                d="M3.5 5h9M6.5 5V3.5h3V5M4.5 5l.6 8h5.8l.6-8"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         </div>
         <div className="board-actions">
           <div className="avatars-inline">
             {members.slice(0, 4).map((member, i) => (
-              <div key={member.id} className="avatar" style={{ width: 28, height: 28, fontSize: 11, background: MEMBER_COLORS[i % MEMBER_COLORS.length] }} title={member.name}>
+              <div
+                key={member.id}
+                className="avatar"
+                style={{
+                  width: 28,
+                  height: 28,
+                  fontSize: 11,
+                  background: MEMBER_COLORS[i % MEMBER_COLORS.length],
+                }}
+                title={member.name}
+              >
                 {initials(member.name)}
               </div>
             ))}
           </div>
           <button
             className="btn btn-ghost"
-            style={{ padding: '8px 16px', fontSize: 13 }}
-            disabled={!members.some((m) => m.id === user.id && m.role === 'admin')}
-            title={members.some((m) => m.id === user.id && m.role === 'admin') ? undefined : 'Only workspace admins can invite'}
+            style={{ padding: "8px 16px", fontSize: 13 }}
+            disabled={
+              !members.some((m) => m.id === user.id && m.role === "admin")
+            }
+            title={
+              members.some((m) => m.id === user.id && m.role === "admin")
+                ? undefined
+                : "Only workspace admins can invite"
+            }
             onClick={() => setShowInviteModal(true)}
           >
             Invite
@@ -332,7 +507,10 @@ export default function Board() {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <SortableContext items={lists.map((l) => `list-${l.id}`)} strategy={horizontalListSortingStrategy}>
+        <SortableContext
+          items={lists.map((l) => `list-${l.id}`)}
+          strategy={horizontalListSortingStrategy}
+        >
           <div className="board-columns">
             {lists.map((list) => (
               <ListColumn
@@ -347,7 +525,10 @@ export default function Board() {
             ))}
 
             {isAddingList ? (
-              <form onSubmit={handleAddList} style={{ width: 264, flexShrink: 0 }}>
+              <form
+                onSubmit={handleAddList}
+                style={{ width: 264, flexShrink: 0 }}
+              >
                 <input
                   autoFocus
                   className="inline-input"
@@ -359,9 +540,23 @@ export default function Board() {
                 />
               </form>
             ) : (
-              <button type="button" className="add-list" onClick={() => setIsAddingList(true)}>
-                <svg className="icon" style={{ width: 15, height: 15 }} viewBox="0 0 16 16" fill="none">
-                  <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              <button
+                type="button"
+                className="add-list"
+                onClick={() => setIsAddingList(true)}
+              >
+                <svg
+                  className="icon"
+                  style={{ width: 15, height: 15 }}
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <path
+                    d="M8 3v10M3 8h10"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                  />
                 </svg>
                 Add another list
               </button>
@@ -370,13 +565,13 @@ export default function Board() {
         </SortableContext>
 
         <DragOverlay>
-          {activeItem?.type === 'card' && activeItem.data && (
-            <div className="card" style={{ cursor: 'grabbing' }}>
+          {activeItem?.type === "card" && activeItem.data && (
+            <div className="card" style={{ cursor: "grabbing" }}>
               <div className="title-text">{activeItem.data.title}</div>
             </div>
           )}
-          {activeItem?.type === 'list' && activeItem.data && (
-            <div className="list" style={{ cursor: 'grabbing', opacity: 0.9 }}>
+          {activeItem?.type === "list" && activeItem.data && (
+            <div className="list" style={{ cursor: "grabbing", opacity: 0.9 }}>
               <div className="list-head">
                 <div className="title">
                   <span className="name">{activeItem.data.name}</span>
@@ -400,7 +595,10 @@ export default function Board() {
       )}
 
       {showInviteModal && (
-        <InviteModal workspace={workspace} onClose={() => setShowInviteModal(false)} />
+        <InviteModal
+          workspace={workspace}
+          onClose={() => setShowInviteModal(false)}
+        />
       )}
     </div>
   );
